@@ -132,3 +132,5 @@ const styles = StyleSheet.create({
 });
 
 export default PropertyCard;
+
+export { PropertyCard }

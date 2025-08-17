@@ -63,3 +63,5 @@ const styles = StyleSheet.create({
 });
 
 export default MessagesScreen;
+
+export { MessagesScreen }

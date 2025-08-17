@@ -352,3 +352,5 @@ const styles = StyleSheet.create({
 });
 
 export default PropertyDetailsScreen;
+
+export { PropertyDetailsScreen }
