@@ -54,14 +54,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-      setUser(data);
+      // Mock user data for development
+      const mockUser = {
+        id: userId,
+        email: 'student@example.com',
+        full_name: 'John Doe',
+        user_type: 'student' as 'student' | 'landlord',
+        phone: '+237123456789',
+        created_at: new Date().toISOString(),
+      };
+      setUser(mockUser);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     } finally {
@@ -70,44 +72,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, userData: Partial<User>) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) throw error;
-
-    if (data.user) {
-      // Create user profile
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert([
-          {
-            id: data.user.id,
-            email,
-            ...userData,
-          },
-        ]);
-
-      if (profileError) throw profileError;
-    }
-
-    return data;
+    // Mock signup for development
+    const mockData = {
+      user: {
+        id: 'mock-user-' + Date.now(),
+        email,
+      },
+    };
+    
+    // Simulate user creation
+    setTimeout(() => {
+      fetchUserProfile(mockData.user.id);
+    }, 100);
+    
+    return mockData;
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) throw error;
-    return data;
+    // Mock signin for development
+    const mockData = {
+      user: {
+        id: 'mock-user-' + Date.now(),
+        email,
+      },
+    };
+    
+    // Simulate user login
+    setTimeout(() => {
+      fetchUserProfile(mockData.user.id);
+    }, 100);
+    
+    return mockData;
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    // Mock signout
+    setUser(null);
+    setSession(null);
   };
 
   const value = {
