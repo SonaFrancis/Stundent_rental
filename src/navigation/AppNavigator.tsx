@@ -90,7 +90,7 @@ const MainStack = () => {
 };
 
 export const AppNavigator = () => {
-  const { session, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return null;
@@ -98,7 +98,7 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {session ? <MainStack /> : <AuthStack />}
+      {user ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
