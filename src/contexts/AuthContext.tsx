@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from '../config/supabase';
 import { User } from '../types';
 
@@ -29,7 +29,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then((response) => {
+      const session = response?.data?.session || null;
       setSession(session);
       if (session?.user) {
         fetchUserProfile(session.user.id);
@@ -39,7 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
+      const subscription = authListener?.data?.subscription;
+      
       setSession(session);
       if (session?.user) {
         fetchUserProfile(session.user.id);
@@ -49,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => authListener?.data?.subscription?.unsubscribe?.();
   }, []);
 
   const fetchUserProfile = async (userId: string) => {

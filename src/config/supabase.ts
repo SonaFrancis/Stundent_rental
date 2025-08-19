@@ -1,24 +1,36 @@
 import 'react-native-url-polyfill/auto';
-import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const supabaseUrl = 'https://mock.supabase.co';
-const supabaseAnonKey = 'mock-anon-key';
 
 // Mock Supabase client for development without connection
 export const supabase = {
   auth: {
-    getSession: () => Promise.resolve({ data: { session: null } }),
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
     onAuthStateChange: (callback: any) => {
       // Mock auth state change
-      return { data: { subscription: { unsubscribe: () => {} } } };
+      return { 
+        data: { 
+          subscription: { 
+            unsubscribe: () => {} 
+          } 
+        } 
+      };
     },
     signUp: (credentials: any) => Promise.resolve({ 
-      data: { user: { id: 'mock-user-id', email: credentials.email } }, 
+      data: { 
+        user: { 
+          id: 'mock-user-id', 
+          email: credentials.email 
+        } 
+      }, 
       error: null 
     }),
     signInWithPassword: (credentials: any) => Promise.resolve({ 
-      data: { user: { id: 'mock-user-id', email: credentials.email } }, 
+      data: { 
+        user: { 
+          id: 'mock-user-id', 
+          email: credentials.email 
+        } 
+      }, 
       error: null 
     }),
     signOut: () => Promise.resolve({ error: null }),
