@@ -29,28 +29,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     supabase.auth.getSession().then((response) => {
-      const sessionData = response?.data?.session || null;
-      setSession(sessionData);
-      if (sessionData?.user) {
-        fetchUserProfile(sessionData.user.id);
-      } else {
+      try {
+        const sessionData = response?.data?.session || null;
+        setSession(sessionData);
+        if (sessionData?.user) {
+          fetchUserProfile(sessionData.user.id);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error getting session:', error);
         setLoading(false);
       }
+    }).catch((error) => {
+      console.error('Error getting session:', error);
+      setLoading(false);
     });
 
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
-      } else {
-        setUser(null);
+      try {
+        setSession(session);
+        if (session?.user) {
+          fetchUserProfile(session.user.id);
+        } else {
+          setUser(null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error in auth state change:', error);
         setLoading(false);
       }
     });
 
     return () => {
-      if (authListener?.data?.subscription?.unsubscribe) {
-        authListener.data.subscription.unsubscribe();
+      try {
+        if (authListener?.data?.subscription?.unsubscribe) {
+          authListener.data.subscription.unsubscribe();
+        }
+      } catch (error) {
+        console.error('Error unsubscribing from auth listener:', error);
       }
     };
   }, []);
