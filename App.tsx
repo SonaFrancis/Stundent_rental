@@ -1,18 +1,13 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from './src/contexts/AuthContext';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello, Cameroon Housing App 👋🏽</Text>
-    </View>
+    <AuthProvider>
+      <StatusBar style="auto" />
+      <AppNavigator />
+    </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
