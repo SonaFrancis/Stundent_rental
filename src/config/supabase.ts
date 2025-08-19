@@ -1,12 +1,9 @@
 import 'react-native-url-polyfill/auto';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Mock Supabase client for development without connection
 export const supabase = {
   auth: {
     getSession: () => Promise.resolve({ data: { session: null }, error: null }),
     onAuthStateChange: (callback: any) => {
-      // Mock auth state change
       return { 
         data: { 
           subscription: { 

@@ -28,21 +28,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then((response) => {
-      const session = response?.data?.session || null;
-      setSession(session);
-      if (session?.user) {
-        fetchUserProfile(session.user.id);
+      const sessionData = response?.data?.session || null;
+      setSession(sessionData);
+      if (sessionData?.user) {
+        fetchUserProfile(sessionData.user.id);
       } else {
         setLoading(false);
       }
     });
 
-    // Listen for auth changes
     const authListener = supabase.auth.onAuthStateChange((_event, session) => {
-      const subscription = authListener?.data?.subscription;
-      
       setSession(session);
       if (session?.user) {
         fetchUserProfile(session.user.id);
@@ -52,12 +48,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return () => authListener?.data?.subscription?.unsubscribe?.();
+    return () => {
+      if (authListener?.data?.subscription?.unsubscribe) {
+        authListener.data.subscription.unsubscribe();
+      }
+    };
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      // Mock user data for development
       const mockUser = {
         id: userId,
         email: 'student@example.com',
@@ -75,7 +74,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, userData: Partial<User>) => {
-    // Mock signup for development
     const mockData = {
       user: {
         id: 'mock-user-' + Date.now(),
@@ -83,7 +81,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
     };
     
-    // Simulate user creation
     setTimeout(() => {
       fetchUserProfile(mockData.user.id);
     }, 100);
@@ -92,7 +89,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    // Mock signin for development
     const mockData = {
       user: {
         id: 'mock-user-' + Date.now(),
@@ -100,7 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       },
     };
     
-    // Simulate user login
     setTimeout(() => {
       fetchUserProfile(mockData.user.id);
     }, 100);
@@ -109,7 +104,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    // Mock signout
     setUser(null);
     setSession(null);
   };

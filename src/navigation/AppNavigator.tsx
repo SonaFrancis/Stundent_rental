@@ -32,7 +32,7 @@ const TabNavigator = () => {
             iconName = focused ? 'person' : 'person-outline';
           }
 
-          return <Ionicons name={iconName as any} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#4F46E5',
         tabBarInactiveTintColor: '#8E8E93',
@@ -93,7 +93,7 @@ export const AppNavigator = () => {
   const { session, loading } = useAuth();
 
   if (loading) {
-    return null; // You can add a loading screen here
+    return null;
   }
 
   return (
