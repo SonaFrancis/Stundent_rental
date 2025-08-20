@@ -1,11 +1,19 @@
 import React from 'react';
-import { AuthProvider } from './src/contexts/AuthContext';
-import { AppNavigator } from './src/navigation/AppNavigator';
+import { Text, View, StyleSheet } from 'react-native';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppNavigator />
-    </AuthProvider>
+    <View style={styles.container}>
+      <Text>Hello World</Text>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
