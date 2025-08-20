@@ -52,8 +52,8 @@ export default function HelpSupportScreen() {
     },
     {
       id: '5',
-      question: 'Can I save properties for later?',
-      answer: 'Yes, tap the heart icon on any property to save it to your favorites. Access saved properties from your profile page.'
+      question: 'How can I keep track of properties I like?',
+      answer: 'Use the search and filter options to easily find properties that match your preferences. You can also contact landlords directly to express interest.'
     },
     {
       id: '6',

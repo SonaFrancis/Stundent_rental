@@ -39,6 +39,7 @@ export interface User {
   name: string;
   email: string;
   phone: string;
+  location?: string;
   userType: 'student' | 'landlord';
   avatar: string;
   bio?: string;
@@ -46,6 +47,15 @@ export interface User {
   createdAt: string;
   hasDashboard?: boolean;
   landlordApplicationStatus?: 'pending' | 'approved' | 'rejected';
+  isRegisteredSeller?: boolean;
+  sellerApplicationStatus?: 'pending' | 'approved' | 'rejected';
+  businessName?: string;
+  businessBio?: string;
+  landlordType?: 'individual' | 'company';
+  companyName?: string;
+  agentName?: string;
+  companyBio?: string;
+  individualBio?: string;
 }
 
 export interface SellItem {
@@ -62,6 +72,7 @@ export interface SellItem {
   sellerId: string;
   available: boolean;
   createdAt: string;
+  features?: string[];
 }
 
 export interface Message {

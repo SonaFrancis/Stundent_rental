@@ -6,23 +6,15 @@ import {
   StyleSheet,
   FlatList,
   SafeAreaView,
-  StatusBar,
-  ScrollView
+  StatusBar
 } from 'react-native';
 import { PropertyCard } from '@/components/PropertyCard';
+import { SellItemCard } from '@/components/SellItemCard';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterModal } from '@/components/FilterModal';
 import { useApp } from '@/contexts/AppContext';
 import { SearchFilters } from '@/types';
-import { 
-  Plus, 
-  MapPin, 
-  Home, 
-  Sofa, 
-  Smartphone, 
-  Car, 
-  Briefcase 
-} from 'lucide-react-native';
+import { Plus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
 export default function ForSaleScreen() {
@@ -232,23 +224,7 @@ export default function ForSaleScreen() {
         data={filteredItems}
         renderItem={({ item }) => {
           if (item.type === 'sell-item') {
-            return (
-              <TouchableOpacity 
-                style={styles.sellItemCard}
-                onPress={() => router.push(`/sell-item-detail/${item.id}`)}
-              >
-                <View style={styles.sellItemContent}>
-                  <Text style={styles.sellItemTitle}>{item.title}</Text>
-                  <Text style={styles.sellItemPrice}>
-                    {item.price.toLocaleString()} FCFA
-                  </Text>
-                  <Text style={styles.sellItemLocation}>{item.location}</Text>
-                  <Text style={styles.sellItemDescription} numberOfLines={2}>
-                    {item.description}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
+            return <SellItemCard item={item} />;
           }
           return <PropertyCard property={item} />;
         }}
@@ -370,44 +346,5 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
     fontWeight: '500',
-  },
-  sellItemCard: {
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
-    marginVertical: 8,
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  sellItemContent: {
-    gap: 4,
-  },
-  sellItemTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  sellItemPrice: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#10B981',
-    marginBottom: 4,
-  },
-  sellItemLocation: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 6,
-  },
-  sellItemDescription: {
-    fontSize: 14,
-    color: '#4B5563',
-    lineHeight: 18,
   },
 });

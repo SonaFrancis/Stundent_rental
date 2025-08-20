@@ -12,7 +12,6 @@ import {
 import { useApp } from '@/contexts/AppContext';
 import { 
   Settings, 
-  Heart, 
   Chrome as Home, 
   MessageSquare, 
   Shield, 
@@ -34,7 +33,6 @@ export default function ProfileScreen() {
   const [showSellModal, setShowSellModal] = useState(false);
 
   const userProperties = properties.filter(p => p.landlordId === user?.id);
-  const savedProperties = properties.slice(0, 2); // Mock saved properties
 
   const handleSignOut = () => {
     Alert.alert(
@@ -92,33 +90,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Heart size={20} color="#EF4444" />
-            <Text style={styles.sectionTitle}>Saved Properties</Text>
-            <Text style={styles.sectionCount}>{savedProperties.length}</Text>
-          </View>
-          
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.propertyList}>
-              {savedProperties.map(property => (
-                <TouchableOpacity
-                  key={property.id}
-                  style={styles.propertyCard}
-                  onPress={() => router.push(`/property/${property.id}`)}
-                >
-                  <Image source={{ uri: property.images[0] }} style={styles.propertyImage} />
-                  <Text style={styles.propertyTitle} numberOfLines={2}>
-                    {property.title}
-                  </Text>
-                  <Text style={styles.propertyPrice}>
-                    {property.price.toLocaleString()} FCFA
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
 
         {user.userType === 'landlord' && (
           <View style={styles.section}>
@@ -159,7 +130,10 @@ export default function ProfileScreen() {
         )}
 
         <View style={styles.menuSection}>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={() => router.push('/edit-profile')}
+          >
             <View style={styles.menuIcon}>
               <Edit size={20} color="#FFFFFF" />
             </View>
@@ -180,24 +154,39 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
           
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => setShowSellModal(true)}
-          >
-            <View style={[styles.menuIcon, { backgroundColor: '#10B981' }]}>
-              <DollarSign size={20} color="#FFFFFF" />
-            </View>
-            <Text style={styles.menuText}>Sell Your Items</Text>
-            <ChevronRight size={20} color="#9CA3AF" />
-          </TouchableOpacity>
+          {user.isRegisteredSeller ? (
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => setShowSellModal(true)}
+            >
+              <View style={[styles.menuIcon, { backgroundColor: '#10B981' }]}>
+                <DollarSign size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.menuText}>Sell Your Items</Text>
+              <ChevronRight size={20} color="#9CA3AF" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => router.push('/register-seller')}
+            >
+              <View style={[styles.menuIcon, { backgroundColor: '#10B981' }]}>
+                <DollarSign size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.menuText}>Register as a Seller</Text>
+              <ChevronRight size={20} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
           
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/dashboard')}>
-            <View style={[styles.menuIcon, { backgroundColor: '#10B981' }]}>
-              <BarChart3 size={20} color="#FFFFFF" />
-            </View>
-            <Text style={styles.menuText}>My Dashboard</Text>
-            <ChevronRight size={20} color="#9CA3AF" />
-          </TouchableOpacity>
+          {user.isRegisteredSeller && (
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/dashboard')}>
+              <View style={[styles.menuIcon, { backgroundColor: '#10B981' }]}>
+                <BarChart3 size={20} color="#FFFFFF" />
+              </View>
+              <Text style={styles.menuText}>My Dashboard</Text>
+              <ChevronRight size={20} color="#9CA3AF" />
+            </TouchableOpacity>
+          )}
           
           <TouchableOpacity style={styles.menuItem}>
             <View style={[styles.menuIcon, { backgroundColor: '#6B7280' }]}>
@@ -293,12 +282,12 @@ const styles = StyleSheet.create({
   },
   contactInfo: {
     paddingHorizontal: 24,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   contactText: {
     fontSize: 14,
@@ -306,7 +295,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -378,7 +367,7 @@ const styles = StyleSheet.create({
   },
   menuSection: {
     paddingHorizontal: 24,
-    paddingTop: 24,
+    paddingTop: 8,
   },
   menuItem: {
     flexDirection: 'row',

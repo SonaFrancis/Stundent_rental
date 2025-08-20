@@ -30,6 +30,11 @@ export default function BecomeLandlordScreen() {
     fullName: '',
     phoneNumber: '',
     email: '',
+    landlordType: '',
+    companyName: '',
+    agentName: '',
+    companyBio: '',
+    individualBio: '',
     idNumber: '',
     address: '',
     propertyExperience: '',
@@ -47,7 +52,8 @@ export default function BecomeLandlordScreen() {
   const validateStep = (step: number) => {
     switch (step) {
       case 1:
-        return formData.fullName && formData.phoneNumber && formData.email;
+        return formData.fullName && formData.phoneNumber && formData.email && formData.landlordType &&
+               (formData.landlordType === 'individual' ? true : formData.companyName);
       case 2:
         return formData.idNumber && formData.address;
       case 3:
@@ -94,38 +100,20 @@ export default function BecomeLandlordScreen() {
 
   const renderProgressBar = () => (
     <View style={styles.progressContainer}>
-      {[1, 2, 3].map((step) => (
-        <View key={step} style={styles.progressStep}>
-          <View style={[
-            styles.progressCircle,
-            step <= currentStep ? styles.activeProgressCircle : styles.inactiveProgressCircle
-          ]}>
-            {step < currentStep ? (
-              <CheckCircle size={16} color="#FFFFFF" />
-            ) : (
-              <Text style={[
-                styles.progressNumber,
-                step === currentStep ? styles.activeProgressNumber : styles.inactiveProgressNumber
-              ]}>
-                {step}
-              </Text>
-            )}
-          </View>
-          {step < 3 && (
-            <View style={[
-              styles.progressLine,
-              step < currentStep ? styles.activeProgressLine : styles.inactiveProgressLine
-            ]} />
-          )}
-        </View>
-      ))}
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: `${(currentStep / 3) * 100}%` }]} />
+      </View>
+      <Text style={styles.progressText}>Step {currentStep} of 3</Text>
     </View>
   );
 
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Personal Information</Text>
-      <Text style={styles.stepSubtitle}>Let's start with your basic details</Text>
+      <View style={styles.stepHeader}>
+        <Building2 size={32} color="#10B981" />
+        <Text style={styles.stepTitle}>Personal Information</Text>
+        <Text style={styles.stepDescription}>Let's start with your basic details</Text>
+      </View>
 
       <View style={styles.inputContainer}>
         <User size={20} color="#6B7280" />
@@ -162,13 +150,121 @@ export default function BecomeLandlordScreen() {
           placeholderTextColor="#9CA3AF"
         />
       </View>
+
+      <Text style={styles.sectionLabel}>Are you registering as? *</Text>
+      <View style={styles.optionsContainer}>
+        <TouchableOpacity
+          style={[
+            styles.optionButton,
+            formData.landlordType === 'individual' && styles.selectedOption
+          ]}
+          onPress={() => updateFormData('landlordType', 'individual')}
+        >
+          <Text style={[
+            styles.optionText,
+            formData.landlordType === 'individual' && styles.selectedOptionText
+          ]}>
+            Individual Property Owner
+          </Text>
+          {formData.landlordType === 'individual' && <CheckCircle size={20} color="#10B981" />}
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[
+            styles.optionButton,
+            formData.landlordType === 'company' && styles.selectedOption
+          ]}
+          onPress={() => updateFormData('landlordType', 'company')}
+        >
+          <Text style={[
+            styles.optionText,
+            formData.landlordType === 'company' && styles.selectedOptionText
+          ]}>
+            Real Estate Company/Agency
+          </Text>
+          {formData.landlordType === 'company' && <CheckCircle size={20} color="#10B981" />}
+        </TouchableOpacity>
+      </View>
+
+      {formData.landlordType === 'individual' && (
+        <View style={styles.textAreaContainer}>
+          <Text style={styles.textAreaLabel}>Personal Bio</Text>
+          <TextInput
+            style={styles.textArea}
+            placeholder="Tell us about yourself and your property background..."
+            value={formData.individualBio}
+            onChangeText={(text) => {
+              if (text.length <= 101) {
+                updateFormData('individualBio', text);
+              }
+            }}
+            multiline
+            numberOfLines={3}
+            placeholderTextColor="#9CA3AF"
+            maxLength={101}
+          />
+          <Text style={styles.characterCount}>
+            {formData.individualBio.length}/101 characters
+          </Text>
+        </View>
+      )}
+
+      {formData.landlordType === 'company' && (
+        <>
+          <View style={styles.inputContainer}>
+            <Building2 size={20} color="#6B7280" />
+            <TextInput
+              style={styles.input}
+              placeholder="Company/Agency Name *"
+              value={formData.companyName}
+              onChangeText={(text) => updateFormData('companyName', text)}
+              placeholderTextColor="#9CA3AF"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <User size={20} color="#6B7280" />
+            <TextInput
+              style={styles.input}
+              placeholder="Agent Name (Optional)"
+              value={formData.agentName}
+              onChangeText={(text) => updateFormData('agentName', text)}
+              placeholderTextColor="#9CA3AF"
+            />
+          </View>
+
+          <View style={styles.textAreaContainer}>
+            <Text style={styles.textAreaLabel}>Company Description</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Tell us about your company and services..."
+              value={formData.companyBio}
+              onChangeText={(text) => {
+                if (text.length <= 101) {
+                  updateFormData('companyBio', text);
+                }
+              }}
+              multiline
+              numberOfLines={3}
+              placeholderTextColor="#9CA3AF"
+              maxLength={101}
+            />
+            <Text style={styles.characterCount}>
+              {formData.companyBio.length}/101 characters
+            </Text>
+          </View>
+        </>
+      )}
     </View>
   );
 
   const renderStep2 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Identification & Address</Text>
-      <Text style={styles.stepSubtitle}>We need to verify your identity</Text>
+      <View style={styles.stepHeader}>
+        <FileText size={32} color="#10B981" />
+        <Text style={styles.stepTitle}>Identification & Address</Text>
+        <Text style={styles.stepDescription}>We need to verify your identity</Text>
+      </View>
 
       <View style={styles.inputContainer}>
         <FileText size={20} color="#6B7280" />
@@ -203,18 +299,21 @@ export default function BecomeLandlordScreen() {
 
   const renderStep3 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Property Experience</Text>
-      <Text style={styles.stepSubtitle}>Tell us about your property goals</Text>
-
-      <View style={styles.checkboxContainer}>
-        <TouchableOpacity
-          style={[styles.checkbox, formData.hasProperties && styles.checkboxActive]}
-          onPress={() => updateFormData('hasProperties', !formData.hasProperties)}
-        >
-          {formData.hasProperties && <CheckCircle size={16} color="#FFFFFF" />}
-        </TouchableOpacity>
-        <Text style={styles.checkboxLabel}>I already own properties</Text>
+      <View style={styles.stepHeader}>
+        <CheckCircle size={32} color="#10B981" />
+        <Text style={styles.stepTitle}>Property Experience</Text>
+        <Text style={styles.stepDescription}>Tell us about your property goals</Text>
       </View>
+
+      <TouchableOpacity
+        style={styles.checkboxContainer}
+        onPress={() => updateFormData('hasProperties', !formData.hasProperties)}
+      >
+        <View style={[styles.checkbox, formData.hasProperties && styles.checkedBox]}>
+          {formData.hasProperties && <CheckCircle size={16} color="#FFFFFF" />}
+        </View>
+        <Text style={styles.checkboxText}>I already own properties</Text>
+      </TouchableOpacity>
 
       {formData.hasProperties && (
         <View style={styles.inputContainer}>
@@ -236,11 +335,19 @@ export default function BecomeLandlordScreen() {
           style={styles.textArea}
           placeholder="Describe your experience with property management or real estate..."
           value={formData.propertyExperience}
-          onChangeText={(text) => updateFormData('propertyExperience', text)}
+          onChangeText={(text) => {
+            if (text.length <= 101) {
+              updateFormData('propertyExperience', text);
+            }
+          }}
           multiline
           numberOfLines={4}
           placeholderTextColor="#9CA3AF"
+          maxLength={101}
         />
+        <Text style={styles.characterCount}>
+          {formData.propertyExperience.length}/101 characters
+        </Text>
       </View>
 
       <View style={styles.textAreaContainer}>
@@ -249,11 +356,19 @@ export default function BecomeLandlordScreen() {
           style={styles.textArea}
           placeholder="Tell us your motivation for joining as a property owner..."
           value={formData.motivation}
-          onChangeText={(text) => updateFormData('motivation', text)}
+          onChangeText={(text) => {
+            if (text.length <= 101) {
+              updateFormData('motivation', text);
+            }
+          }}
           multiline
           numberOfLines={4}
           placeholderTextColor="#9CA3AF"
+          maxLength={101}
         />
+        <Text style={styles.characterCount}>
+          {formData.motivation.length}/101 characters
+        </Text>
       </View>
     </View>
   );
@@ -291,16 +406,14 @@ export default function BecomeLandlordScreen() {
               <Text style={styles.backStepButtonText}>Back</Text>
             </TouchableOpacity>
           )}
+          
           <TouchableOpacity
-            style={[
-              styles.nextButton,
-              !validateStep(currentStep) && styles.nextButtonDisabled
-            ]}
+            style={[styles.nextButton, isSubmitting && styles.nextButtonDisabled]}
             onPress={handleNext}
-            disabled={isSubmitting || !validateStep(currentStep)}
+            disabled={isSubmitting}
           >
             <Text style={styles.nextButtonText}>
-              {isSubmitting ? 'Submitting...' : currentStep === 3 ? 'Submit Application' : 'Next'}
+              {isSubmitting ? 'Processing...' : currentStep === 3 ? 'Complete Registration' : 'Next'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -336,49 +449,25 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#F9FAFB',
   },
-  progressStep: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  activeProgressCircle: {
-    backgroundColor: '#3B82F6',
-  },
-  inactiveProgressCircle: {
+  progressBar: {
+    height: 4,
     backgroundColor: '#E5E7EB',
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginBottom: 8,
   },
-  progressNumber: {
-    fontSize: 14,
-    fontWeight: '600',
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#10B981',
   },
-  activeProgressNumber: {
-    color: '#FFFFFF',
-  },
-  inactiveProgressNumber: {
-    color: '#9CA3AF',
-  },
-  progressLine: {
-    width: 40,
-    height: 2,
-    marginHorizontal: 8,
-  },
-  activeProgressLine: {
-    backgroundColor: '#3B82F6',
-  },
-  inactiveProgressLine: {
-    backgroundColor: '#E5E7EB',
+  progressText: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -387,18 +476,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stepContainer: {
-    padding: 24,
+    padding: 16,
+  },
+  stepHeader: {
+    alignItems: 'center',
+    marginBottom: 32,
   },
   stepTitle: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '600',
     color: '#1F2937',
+    marginTop: 12,
     marginBottom: 8,
   },
-  stepSubtitle: {
-    fontSize: 16,
+  stepDescription: {
+    fontSize: 14,
     color: '#6B7280',
-    marginBottom: 32,
+    textAlign: 'center',
+    lineHeight: 20,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -437,26 +532,29 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   checkbox: {
     width: 20,
     height: 20,
-    borderRadius: 4,
     borderWidth: 2,
     borderColor: '#D1D5DB',
-    marginRight: 12,
+    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 12,
+    marginTop: 2,
   },
-  checkboxActive: {
-    backgroundColor: '#3B82F6',
-    borderColor: '#3B82F6',
+  checkedBox: {
+    borderColor: '#10B981',
+    backgroundColor: '#10B981',
   },
-  checkboxLabel: {
-    fontSize: 16,
-    color: '#1F2937',
+  checkboxText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
   },
   textAreaContainer: {
     marginBottom: 24,
@@ -480,7 +578,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    padding: 24,
+    padding: 16,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
     gap: 12,
@@ -489,19 +587,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   backStepButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4B5563',
+    color: '#6B7280',
   },
   nextButton: {
     flex: 2,
+    backgroundColor: '#10B981',
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: '#3B82F6',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   nextButtonDisabled: {
@@ -511,5 +612,44 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  optionsContainer: {
+    marginBottom: 20,
+  },
+  optionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 12,
+    marginBottom: 8,
+    backgroundColor: '#FFFFFF',
+  },
+  selectedOption: {
+    borderColor: '#10B981',
+    backgroundColor: '#F0FDF4',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#1F2937',
+  },
+  selectedOptionText: {
+    color: '#10B981',
+    fontWeight: '500',
+  },
+  characterCount: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'right',
+    marginTop: 4,
   },
 });

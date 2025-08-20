@@ -53,6 +53,16 @@ export default function DashboardScreen() {
       sellerId: user?.id || '1',
       available: true,
       createdAt: '2024-01-10T10:00:00Z',
+      features: [
+        'M1 Chip - 8 Core CPU',
+        '8GB Unified Memory', 
+        '256GB SSD Storage',
+        '13.3" Retina Display',
+        'Touch Bar & Touch ID',
+        'Two Thunderbolt Ports',
+        'All-day battery life',
+        'macOS Monterey'
+      ]
     },
     {
       id: '2',
@@ -156,6 +166,22 @@ export default function DashboardScreen() {
         <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
         <Text style={styles.itemPrice}>{item.price.toLocaleString()} {item.currency}</Text>
         <Text style={styles.itemLocation}>{item.location}</Text>
+        
+        {/* Features & Specifications for Electronics */}
+        {item.category === 'electronics' && item.features && item.features.length > 0 && (
+          <View style={styles.featuresSection}>
+            <Text style={styles.featuresTitle}>Features & Specifications</Text>
+            {item.features.slice(0, 3).map((feature, index) => (
+              <View key={index} style={styles.featureItem}>
+                <View style={styles.featureBullet} />
+                <Text style={styles.featureText} numberOfLines={1}>{feature}</Text>
+              </View>
+            ))}
+            {item.features.length > 3 && (
+              <Text style={styles.moreFeatures}>+{item.features.length - 3} more features</Text>
+            )}
+          </View>
+        )}
         
         <View style={styles.itemStatus}>
           <View style={[
@@ -581,6 +607,41 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     marginBottom: 8,
+  },
+  featuresSection: {
+    marginBottom: 12,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  featuresTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 6,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 3,
+  },
+  featureBullet: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#3B82F6',
+  },
+  featureText: {
+    fontSize: 11,
+    color: '#6B7280',
+    flex: 1,
+  },
+  moreFeatures: {
+    fontSize: 10,
+    color: '#9CA3AF',
+    fontStyle: 'italic',
+    marginTop: 2,
   },
   itemStatus: {
     alignSelf: 'flex-start',

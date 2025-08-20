@@ -21,7 +21,6 @@ import {
   FileText,
   Tag,
   Phone,
-  Plus,
   X,
   Package,
   Building2,
@@ -114,8 +113,9 @@ export default function PostSaleItemScreen() {
       return;
     }
     
-    // In a real app, this would open camera/gallery
-    const newImage = `https://images.pexels.com/photos/${Math.floor(Math.random() * 1000000)}/pexels-photo-${Math.floor(Math.random() * 1000000)}.jpeg?auto=compress&cs=tinysrgb&w=400`;
+    // In a real app, this would open camera/gallery with proper constraints
+    // Images should be optimized to: max 1200x1200, compressed quality, under 2MB
+    const newImage = `https://images.pexels.com/photos/${Math.floor(Math.random() * 1000000)}/pexels-photo-${Math.floor(Math.random() * 1000000)}.jpeg?auto=compress&cs=tinysrgb&w=800`;
     setFormData(prev => ({
       ...prev,
       images: [...prev.images, newImage]
@@ -188,7 +188,6 @@ export default function PostSaleItemScreen() {
   };
 
   const selectedCategory = categories.find(cat => cat.id === formData.category);
-  const CategoryIcon = selectedCategory?.icon || Package;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -519,9 +518,10 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   imagePreview: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     borderRadius: 8,
+    resizeMode: 'cover',
   },
   removeImageButton: {
     position: 'absolute',
@@ -535,8 +535,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addImageButton: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     borderRadius: 8,
     borderWidth: 2,
     borderColor: '#D1D5DB',

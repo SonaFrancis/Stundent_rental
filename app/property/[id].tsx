@@ -18,12 +18,9 @@ import { ReviewCard } from '@/components/ReviewCard';
 import { formatCurrency, formatDistance } from '@/utils/currency';
 import { 
   ArrowLeft, 
-  Heart, 
   Share, 
   MessageCircle, 
   MapPin,
-  Ruler,
-  Calendar,
   Star
 } from 'lucide-react-native';
 
@@ -34,7 +31,6 @@ export default function PropertyDetailScreen() {
   const { properties, user, startChat } = useApp();
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isSaved, setIsSaved] = useState(false);
 
   const property = properties.find(p => p.id === id);
   const landlord = mockUsers.find(u => u.id === property?.landlordId);
@@ -64,13 +60,6 @@ export default function PropertyDetailScreen() {
     router.push(`/chat/${chatId}`);
   };
 
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-    Alert.alert(
-      isSaved ? 'Removed' : 'Saved',
-      isSaved ? 'Property removed from saved list' : 'Property saved to your list'
-    );
-  };
 
   const handleShare = () => {
     Alert.alert('Share', 'Share functionality would be implemented here');
@@ -89,9 +78,6 @@ export default function PropertyDetailScreen() {
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerButton} onPress={handleShare}>
             <Share size={24} color="#1F2937" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerButton} onPress={handleSave}>
-            <Heart size={24} color={isSaved ? "#EF4444" : "#1F2937"} fill={isSaved ? "#EF4444" : "none"} />
           </TouchableOpacity>
         </View>
       </View>
@@ -232,8 +218,26 @@ export default function PropertyDetailScreen() {
               <View style={styles.landlordInfo}>
                 <Image source={{ uri: landlord.avatar }} style={styles.landlordAvatar} />
                 <View style={styles.landlordDetails}>
-                  <Text style={styles.landlordName}>{landlord.name}</Text>
-                  <Text style={styles.landlordBio}>{landlord.bio}</Text>
+                  {landlord.landlordType === 'company' ? (
+                    <>
+                      <Text style={styles.landlordName}>
+                        {landlord.companyName}
+                        {landlord.agentName && (
+                          <Text style={styles.agentName}> - {landlord.agentName}</Text>
+                        )}
+                      </Text>
+                      <Text style={styles.landlordBio}>
+                        {landlord.companyBio || landlord.bio}
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.landlordName}>{landlord.name}</Text>
+                      <Text style={styles.landlordBio}>
+                        {landlord.individualBio || landlord.bio}
+                      </Text>
+                    </>
+                  )}
                 </View>
               </View>
             </View>
@@ -467,6 +471,11 @@ const styles = StyleSheet.create({
   landlordBio: {
     fontSize: 14,
     color: '#6B7280',
+  },
+  agentName: {
+    fontSize: 14,
+    color: '#3B82F6',
+    fontWeight: '500',
   },
   footer: {
     padding: 24,

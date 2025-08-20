@@ -14,15 +14,12 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { 
   ArrowLeft, 
-  Heart, 
   Share, 
   MapPin, 
-  Phone, 
   MessageCircle,
   Star,
   Calendar,
-  Tag,
-  User
+  Tag
 } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
@@ -31,7 +28,6 @@ export default function SellItemDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isSaved, setIsSaved] = useState(false);
 
   // Mock data - in a real app, this would come from API based on the id
   const mockSellItems = {
@@ -52,6 +48,8 @@ export default function SellItemDetailScreen() {
       seller: {
         id: '2',
         name: 'John Kamdem',
+        businessName: 'Tech Solutions Pro',
+        businessBio: 'Specializing in premium electronics and tech accessories. Quality guaranteed with warranty.',
         avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
         rating: 4.8,
         verified: true
@@ -82,6 +80,8 @@ export default function SellItemDetailScreen() {
       seller: {
         id: '3',
         name: 'Marie Ngono',
+        businessName: 'Auto Elite Cameroon',
+        businessBio: 'Premier car dealership offering quality used vehicles with full inspection and warranty.',
         avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150',
         rating: 4.9,
         verified: true
@@ -112,6 +112,8 @@ export default function SellItemDetailScreen() {
       seller: {
         id: '4',
         name: 'Paul Mbida',
+        businessName: 'Mbida Furniture Works',
+        businessBio: 'Handcrafted furniture made from premium wood. Custom designs and home delivery available.',
         avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150',
         rating: 4.6,
         verified: false
@@ -143,9 +145,6 @@ export default function SellItemDetailScreen() {
     );
   }
 
-  const handleCall = () => {
-    Linking.openURL(`tel:${item.contactPhone}`);
-  };
 
   const handleMessage = () => {
     router.push(`/chat/sell-${item.id}`);
@@ -155,10 +154,6 @@ export default function SellItemDetailScreen() {
     Alert.alert('Share', 'Share functionality would be implemented here');
   };
 
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-    Alert.alert(isSaved ? 'Removed from saved' : 'Added to saved', '');
-  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -205,9 +200,6 @@ export default function SellItemDetailScreen() {
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
             <Share size={20} color="#6B7280" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={handleSave}>
-            <Heart size={20} color={isSaved ? "#EF4444" : "#6B7280"} fill={isSaved ? "#EF4444" : "none"} />
           </TouchableOpacity>
         </View>
       </View>
@@ -289,13 +281,18 @@ export default function SellItemDetailScreen() {
               <Image source={{ uri: item.seller.avatar }} style={styles.sellerAvatar} />
               <View style={styles.sellerInfo}>
                 <View style={styles.sellerNameContainer}>
-                  <Text style={styles.sellerName}>{item.seller.name}</Text>
+                  <Text style={styles.sellerName}>
+                    {item.seller.businessName || item.seller.name}
+                  </Text>
                   {item.seller.verified && (
                     <View style={styles.verifiedBadge}>
                       <Text style={styles.verifiedText}>✓</Text>
                     </View>
                   )}
                 </View>
+                {item.seller.businessBio && (
+                  <Text style={styles.sellerBio}>{item.seller.businessBio}</Text>
+                )}
                 <View style={styles.ratingContainer}>
                   <View style={styles.stars}>
                     {renderStars(item.seller.rating)}
@@ -308,16 +305,11 @@ export default function SellItemDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Contact Buttons */}
+      {/* Contact Button */}
       <View style={styles.contactButtons}>
-        <TouchableOpacity style={styles.callButton} onPress={handleCall}>
-          <Phone size={20} color="#FFFFFF" />
-          <Text style={styles.callButtonText}>Call</Text>
-        </TouchableOpacity>
-        
         <TouchableOpacity style={styles.messageButton} onPress={handleMessage}>
           <MessageCircle size={20} color="#FFFFFF" />
-          <Text style={styles.messageButtonText}>Message</Text>
+          <Text style={styles.messageButtonText}>Message Seller</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -479,6 +471,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#1F2937',
+    marginBottom: 2,
+  },
+  sellerBio: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 8,
+    lineHeight: 20,
   },
   verifiedBadge: {
     width: 18,
@@ -507,34 +506,16 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
   contactButtons: {
-    flexDirection: 'row',
     padding: 16,
-    gap: 12,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
-  callButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#10B981',
-    paddingVertical: 14,
-    borderRadius: 12,
-    gap: 8,
-  },
-  callButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
   messageButton: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#3B82F6',
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 12,
     gap: 8,
   },

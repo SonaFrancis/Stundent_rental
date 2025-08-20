@@ -8,6 +8,7 @@ interface AppContextType {
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<boolean>;
   signOut: () => void;
+  updateUser: (updatedUser: User) => void;
   
   // Properties
   properties: Property[];
@@ -50,6 +51,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const signOut = () => {
     setUser(null);
+  };
+
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
   };
 
   const addProperty = (propertyData: Omit<Property, 'id' | 'createdAt'>) => {
@@ -156,6 +161,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isAuthenticated,
         signIn,
         signOut,
+        updateUser,
         properties,
         addProperty,
         chats,
