@@ -1,10 +1,12 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Hello World</Text>
+      <Text style={styles.text}>Hello World</Text>
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -12,8 +14,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  text: {
+    fontSize: 18,
+    color: '#000000',
   },
 });
